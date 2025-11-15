@@ -15,12 +15,35 @@ from .algorithms import (
     estimate_kmin
 )
 
+from .openrouter import (
+    OpenRouterClient,
+    estimate_cost,
+    format_cost_estimate,
+    get_recommended_model,
+    list_available_models
+)
+
+from .decomposer import (
+    TaskDecomposer,
+    create_micro_agent_from_decomposition
+)
+
 __all__ = [
+    # Algorithms
     'generate_solution',
     'do_voting',
     'get_vote',
     'create_red_flag_checker',
-    'estimate_kmin'
+    'estimate_kmin',
+    # OpenRouter
+    'OpenRouterClient',
+    'estimate_cost',
+    'format_cost_estimate',
+    'get_recommended_model',
+    'list_available_models',
+    # Decomposer
+    'TaskDecomposer',
+    'create_micro_agent_from_decomposition'
 ]
 
-__version__ = '0.1.0'
+__version__ = '0.2.0'
