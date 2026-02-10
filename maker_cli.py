@@ -5,6 +5,7 @@ MAKER Framework Interactive CLI
 Simple interface for users to input their task and let MAKER handle the rest.
 """
 
+import getpass
 import os
 import sys
 from typing import Optional
@@ -44,7 +45,7 @@ def get_api_key() -> Optional[str]:
         
         choice = input("\nEnter API key now? (y/n): ").strip().lower()
         if choice == 'y':
-            api_key = input("API Key: ").strip()
+            api_key = getpass.getpass("API Key: ").strip()
         else:
             print("\n❌ Cannot proceed without API key. Exiting.")
             return None

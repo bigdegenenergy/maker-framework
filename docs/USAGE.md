@@ -6,8 +6,8 @@ This guide provides step-by-step instructions for using the MAKER framework in y
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/maker_framework.git
-   cd maker_framework
+   git clone https://github.com/bigdegenenergy/maker-framework.git
+   cd maker-framework
    ```
 
 2. Install dependencies:
