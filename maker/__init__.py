@@ -28,6 +28,15 @@ from .decomposer import (
     create_micro_agent_from_decomposition
 )
 
+
+def __getattr__(name: str):
+    """Lazy import for execute_task to avoid conflict with python -m maker.execute."""
+    if name == "execute_task":
+        from .execute import execute_task
+        return execute_task
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+
+
 __all__ = [
     # Algorithms
     'generate_solution',
@@ -43,7 +52,9 @@ __all__ = [
     'list_available_models',
     # Decomposer
     'TaskDecomposer',
-    'create_micro_agent_from_decomposition'
+    'create_micro_agent_from_decomposition',
+    # Executor
+    'execute_task',
 ]
 
 __version__ = '0.2.0'

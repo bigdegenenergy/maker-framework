@@ -10,6 +10,7 @@ Based on the paper "Solving a Million-Step LLM Task with Zero Errors"
 arXiv:2511.09030
 """
 
+import json
 from typing import Callable, Any, Dict, List, Tuple, Optional
 from collections import defaultdict
 
@@ -84,8 +85,10 @@ def do_voting(
     Returns:
         Tuple of (winning_action, next_state)
     """
-    vote_counts = defaultdict(int)
-    
+    vote_counts: Dict[Any, int] = defaultdict(int)
+    # Map hashable keys back to (original_action, next_state)
+    key_to_original: Dict[Any, Tuple[Any, Any]] = {}
+
     while True:
         action, next_state = get_vote(
             state,
@@ -94,23 +97,26 @@ def do_voting(
             parse_next_state,
             check_red_flags
         )
-        
+
         # Convert action to a hashable type for counting
-        # (assumes action can be converted to tuple or is already hashable)
-        action_key = tuple(action) if isinstance(action, list) else action
+        if isinstance(action, dict):
+            action_key = json.dumps(action, sort_keys=True)
+        elif isinstance(action, list):
+            action_key = tuple(action)
+        else:
+            action_key = action
         vote_counts[action_key] += 1
-        
+        key_to_original[action_key] = (action, next_state)
+
         # Check if we have a winner (first-to-ahead-by-k)
         max_votes = max(vote_counts.values())
-        second_max_votes = sorted(vote_counts.values(), reverse=True)[1] if len(vote_counts) > 1 else 0
-        
-        if max_votes >= k + second_max_votes:
-            # Find the winning action
-            for candidate_action, votes in vote_counts.items():
+        second_max = sorted(vote_counts.values(), reverse=True)[1] if len(vote_counts) > 1 else 0
+
+        if max_votes >= k + second_max:
+            for candidate_key, votes in vote_counts.items():
                 if votes == max_votes:
-                    # Convert back to list if needed
-                    winning_action = list(candidate_action) if isinstance(candidate_action, tuple) else candidate_action
-                    return winning_action, next_state
+                    orig_action, orig_state = key_to_original[candidate_key]
+                    return orig_action, orig_state
 
 
 def get_vote(
